@@ -1,5 +1,6 @@
 var oracledb = require('oracledb');
-/*
+console.info('oracledb:', oracledb);
+
 exports.handler = function(event, context) {
     console.info('event:', event);
     console.info('context:', context);
@@ -10,8 +11,4 @@ exports.handler = function(event, context) {
     } else {
         context.fail('Did not actually expect to see this, `require(\'oracledb\')` will fail');
     }
-};*/
-
-// module.exports = function() {
-    console.info('oracledb:', oracledb);
-// };
+};
