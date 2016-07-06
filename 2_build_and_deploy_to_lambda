@@ -1,0 +1,16 @@
+#!/bin/bash
+
+EC2_ID=$(aws cloudformation describe-stack-resources --stack-name node-oracle-lambda-test | grep PhysicalResourceId | sed -E 's/.*"PhysicalResourceId": "([^"]+)".*/\1/')
+ADDRESS=$(aws ec2 describe-instances --instance-ids ${EC2_ID} | grep -A 5 PrivateIpAddresses | grep '"PrivateIpAddress"' | sed -E 's/.*": "([^"]+)"/\1/')
+
+IDENTITY_FILE=$1
+if [[ "${IDENTITY_FILE}" == "" ]]; then
+  read -e -p $'Enter the path to your identity file (eg ~/.ssh/aws.pem)? ' IDENTITY_FILE
+  if [ "${IDENTITY_FILE}" == "" ]; then
+    echo "Need to provide an identity file"
+    exit 1
+  fi
+fi
+
+ssh ec2-user@${ADDRESS} -i ${IDENTITY_FILE}
+# 'bash s' < 2a_build_and_deploy_to_lambda-remote-script

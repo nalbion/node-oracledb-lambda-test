@@ -1,0 +1,19 @@
+#!/bin/bash
+
+KEY_NAME=$1
+if [[ "${KEY_NAME}" == "" ]]; then
+  read -e -p $'What is the EC2 key name to be used to ssh into the build machine? ' KEY_NAME
+  if [ "${KEY_NAME}" == "" ]; then
+    echo "Need to provide a key name"
+    exit 1
+  fi
+fi
+
+if [[ "$2" != "" ]]; then
+  EXTRA_PARAMS=" ParameterKey=Subnet,ParameterValue=$2 ParameterKey=InstanceSecurityGroup,ParameterValue=$3"
+fi
+
+aws cloudformation create-stack \
+  --stack-name node-oracle-lambda-test \
+  --template-body file://cloudformation.template \
+  --parameters ParameterKey=KeyName,ParameterValue=${KEY_NAME}${EXTRA_PARAMS} \

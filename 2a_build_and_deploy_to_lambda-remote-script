@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Lambda runs Node 4.3.2 - use the same to build our app and dependencies
+sudo yum -y install gcc44 gcc-c++ libgcc44 cmake git
+wget http://nodejs.org/dist/v4.3.2/node-v4.3.2.tar.gz
+tar -zxvf node-v4.3.2.tar.gz
+cd node-v4.3.2 && ./configure && make
+sudo make install
+cd ..
+rm -rf node-v4.3.2*
+
+git clone https://github.com/nalbion/node-oracledb-lambda-test.git
+cd node-oracledb-lambda-test
+npm install
+
+zip app.zip index.js node_moduels
+
+
+aws lambda create-function \
+    --function-name node-oracledb-test \
+    --runtime nodejs4.3 \
+    --role ${LAMBDA_ROLE_ARN} \
+    --handler index.handler \
+    --zip-file app.zip

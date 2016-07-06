@@ -1,0 +1,64 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Environment for building node-oracledb for AWS Lambda",
+
+  "Parameters": {
+    "KeyName": {
+      "Type": "String",
+      "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance"
+    },
+
+    "Subnet": {
+      "Type": "String",
+      "Description": "Required if installing into a VPC"
+    },
+    "InstanceSecurityGroup": {
+      "Type": "String",
+      "Description": "Required if installing into a VPC"
+    }
+  },
+
+  "Conditions": {
+    "InVPC": {
+      "Fn::Not": [{
+        "Fn::Equals": [{"Ref": "Subnet"}, ""]
+      }]
+    }
+  },
+
+  "Resources": {
+    "BuildMachine": {
+      "Type": "AWS::EC2::Instance",
+      "Metadata": {
+        "Comment": "Based on an AMI (in your region) with name amzn-ami-hvm-2015.09.1.x86_64-gp2"
+      },
+      "Properties": {
+        "ImageId": "ami-48d38c2b",
+        "InstanceType": "t2.small",
+        "KeyName": { "Ref": "KeyName" },
+        "Tags": [ {"Key": "Name", "Value": "TEST-node-oracledb-lambda-build-machine"} ],
+        "SecurityGroupIds": [{
+          "Fn::If": [
+            "InVPC",
+            { "Ref": "InstanceSecurityGroup" },
+            { "Ref": "AWS::NoValue" }
+          ]
+        }],
+        "SubnetId": {
+          "Fn::If": [
+            "InVPC",
+            { "Ref": "Subnet" },
+            { "Ref": "AWS::NoValue" }
+          ]
+        },
+        "UserData": {"Fn::Base64": { "Fn::Join": ["\n",[
+            "#!/bin/bash -ex",
+            "sudo yum update",
+            "sudo yum install git -y",
+            "git clone https://github.com/nalbion/oracle-lambda-test"
+          ]]}
+        }
+      }
+    }
+  }
+}
