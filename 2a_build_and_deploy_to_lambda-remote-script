@@ -11,9 +11,23 @@ rm -rf node-v4.3.2*
 
 git clone https://github.com/nalbion/node-oracledb-lambda-test.git
 cd node-oracledb-lambda-test
+
+# Install Oracle Instant Client "Basic" and "SDK"
+sudo mkdir /opt/oracle
+sudo unzip oracle-instant-client/instantclient-basic-linux.x64-12.1.0.2.0.zip -d /opt/oracle
+sudo unzip oracle-instant-client/instantclient-sdk-linux.x64-12.1.0.2.0.zip -d /opt/oracle
+export OCI_LIB_DIR=/opt/oracle/instantclient_12_1
+export OCI_INC_DIR=/opt/oracle/instantclient_12_1/sdk/include
+export LD_LIBRARY_PATH=/opt/oracle/instantclient_12_1:$LD_LIBRARY_PATH
+export PATH=/opt/oracle/instantclient_12_1:$PATH
+pushd $OCI_LIB_DIR
+sudo ln -s libclntsh.so.12.1 libclntsh.so
+popd
+cp $OCI_LIB_DIR/*.so* lib/
+
 npm install
 
-zip app.zip index.js node_moduels
+zip app.zip index.js node_modules
 
 
 aws lambda create-function \
