@@ -42,7 +42,10 @@ zip app.zip index.js package.json \
     lib/libipc1.so \
     lib/libnnz12.so \
     lib/libons.so \
-    lib/libaio.so.1
+    lib/libaio.so.1 \
+    lib/libociei.so
+
+#    lib/libocci.so.12.1 \
 
 # need to run `aws configure` to configure credentials - ...or just do it locally where that's already done
 #LAMBDA_ROLE_ARN=(updated by 2_build_and_deploy_to_lambda-remote-script)
@@ -54,3 +57,4 @@ zip app.zip index.js package.json \
 #    --role ${LAMBDA_ROLE_ARN} \
 #    --handler index.handler \
 #    --zip-file fileb://app.zip
+
