@@ -16,4 +16,6 @@ fi
 aws cloudformation create-stack \
   --stack-name node-oracle-lambda-test \
   --template-body file://cloudformation.template \
-  --parameters ParameterKey=KeyName,ParameterValue=${KEY_NAME}${EXTRA_PARAMS} \
+  --capabilities CAPABILITY_IAM \
+  --parameters ParameterKey=KeyName,ParameterValue=${KEY_NAME}${EXTRA_PARAMS}
+

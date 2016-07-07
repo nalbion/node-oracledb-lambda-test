@@ -59,6 +59,52 @@
           ]]}
         }
       }
+    },
+
+    "LambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Metadata": {
+        "Comment": "The Lambda function runs under this role"
+      },
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "lambda.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+          }]
+        },
+        "Path": "/",
+        "Policies": [ {
+          "PolicyName": "node-oracledb-lambda-test_execution",
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [ {
+              "Effect": "Allow",
+              "Action": [
+                "logs:*",
+                "s3:*"
+              ],
+              "Resource": [
+                "arn:aws:logs:*:*:*",
+                "arn:aws:s3:::*"
+              ]
+            } ]
+          }
+        } ]
+      }
+    },
+
+    "Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "node-oracledb-lambda-test",
+        "AccessControl": "Private"
+      }
     }
   }
 }

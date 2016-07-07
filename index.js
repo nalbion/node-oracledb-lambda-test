@@ -1,14 +1,27 @@
-var oracledb = require('oracledb');
-console.info('oracledb:', oracledb);
+var oracledb;
+// try {
+//     oracledb = require('oracledb');
+// } catch (e) {
+//     console.error('Failed to load oracledb:', e);
+// }
 
-exports.handler = function(event, context) {
-    console.info('event:', event);
-    console.info('context:', context);
-    console.info('oracledb:', oracledb);
+// console.log('oracledb:', oracledb);
+
+exports.handler = function(event, context, callback) {
+    console.log('event:', event);
+    console.log('context:', context);
+    try {
+        oracledb = require('oracledb');
+    } catch (e) {
+        console.log('Failed to load oracledb:');
+        console.log(e);
+        callback('Failed to load oracledb');
+    }
+    console.log('oracledb:', oracledb);
 
     if (oracledb != null) {
-        context.succeed('Oracle DB is supported');
+        callback(null, 'Oracle DB is supported');
     } else {
-        context.fail('Did not actually expect to see this, `require(\'oracledb\')` will fail');
+        callback('Did not actually expect to see this, `require(\'oracledb\')` will fail');
     }
 };

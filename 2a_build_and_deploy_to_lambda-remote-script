@@ -1,13 +1,16 @@
 #!/bin/bash
 
 # Lambda runs Node 4.3.2 - use the same to build our app and dependencies
-sudo yum -y install gcc44 gcc-c++ libgcc44 cmake git
-wget http://nodejs.org/dist/v4.3.2/node-v4.3.2.tar.gz
-tar -zxvf node-v4.3.2.tar.gz
-cd node-v4.3.2 && ./configure && make
-sudo make install
-cd ..
-rm -rf node-v4.3.2*
+NODE_VERSION=$(node --version)
+if [[ "${NODE_VERSION}" != "v4.3.2" ]]; then
+  sudo yum -y install gcc44 gcc-c++ libgcc44 cmake git
+  wget http://nodejs.org/dist/v4.3.2/node-v4.3.2.tar.gz
+  tar -zxvf node-v4.3.2.tar.gz
+  cd node-v4.3.2 && ./configure && make
+  sudo make install
+  cd ..
+  rm -rf node-v4.3.2*
+fi
 
 git clone https://github.com/nalbion/node-oracledb-lambda-test.git
 cd node-oracledb-lambda-test
@@ -23,16 +26,31 @@ export PATH=/opt/oracle/instantclient_12_1:$PATH
 pushd $OCI_LIB_DIR
 sudo ln -s libclntsh.so.12.1 libclntsh.so
 popd
-cp $OCI_LIB_DIR/*.so* lib/
 
 npm install
 
-zip app.zip index.js node_modules
+cp $OCI_LIB_DIR/*.so* lib/
+cp /lib64/libaio.so.1 lib/
+zip app.zip index.js package.json \
+    node_modules/oracledb/package.json \
+    node_modules/oracledb/index.js \
+    node_modules/oracledb/lib/* \
+    node_modules/oracledb/build/Release/oracledb.node \
+    lib/libclntshcore.so.12.1 \
+    lib/libclntsh.so.12.1 \
+    lib/libmql1.so \
+    lib/libipc1.so \
+    lib/libnnz12.so \
+    lib/libons.so \
+    lib/libaio.so.1
 
-
-aws lambda create-function \
-    --function-name node-oracledb-test \
-    --runtime nodejs4.3 \
-    --role ${LAMBDA_ROLE_ARN} \
-    --handler index.handler \
-    --zip-file app.zip
+# need to run `aws configure` to configure credentials - ...or just do it locally where that's already done
+#LAMBDA_ROLE_ARN=(updated by 2_build_and_deploy_to_lambda-remote-script)
+#
+#aws lambda create-function \
+#    --region ap-southeast-2 \
+#    --function-name node-oracledb-test \
+#    --runtime nodejs4.3 \
+#    --role ${LAMBDA_ROLE_ARN} \
+#    --handler index.handler \
+#    --zip-file fileb://app.zip
