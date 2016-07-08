@@ -42,9 +42,13 @@ zip app.zip index.js package.json \
     lib/libipc1.so \
     lib/libnnz12.so \
     lib/libons.so \
-    lib/libaio.so.1 \
-    lib/libociei.so
+    lib/libociicus.so \
+    lib/libaio.so.1
 
+# 104 MB - contains error messages in many languages
+#    lib/libociei.so \
+
+# C++ call interface - doesn't seem to be required
 #    lib/libocci.so.12.1 \
 
 # need to run `aws configure` to configure credentials - ...or just do it locally where that's already done
