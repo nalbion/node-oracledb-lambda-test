@@ -55,7 +55,7 @@
             "#!/bin/bash -ex",
             "sudo yum update",
             "sudo yum install git -y",
-            "git clone https://github.com/nalbion/oracle-lambda-test"
+            "git clone https://github.com/nalbion/node-oracledb-lambda-test"
           ]]}
         }
       }
