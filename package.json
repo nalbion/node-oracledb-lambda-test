@@ -1,6 +1,6 @@
 {
   "name": "node-oracledb-lambda-test",
-  "version": "1.0.0",
+  "version": "1.6.0",
   "description": "Simple test app to test node-oracledb on AWS Lambda",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

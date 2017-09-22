@@ -14,16 +14,22 @@ if [[ "${IDENTITY_FILE}" == "" ]]; then
   fi
 fi
 
-LAMBDA_ROLE_ARN=$(aws iam list-roles | grep Arn.*node-oracledb-lambda-test_execution | sed -E 's/.*"Arn": "([^"]+)".*/\1/')
+#LAMBDA_ROLE_ARN=$(aws iam list-roles | grep Arn.*node-oracledb-lambda-test_execution | sed -E 's/.*"Arn": "([^"]+)".*/\1/')
+LAMBDA_ROLE_ARN=$(aws iam list-roles | grep Arn.*node-orac | sed -E 's/.*"Arn": "([^"]+)".*/\1/')
+echo LAMBDA_ROLE_ARN: ${LAMBDA_ROLE_ARN}
 
 sed -i "s|LAMBDA_ROLE_ARN=.*|LAMBDA_ROLE_ARN=${LAMBDA_ROLE_ARN}|" 2a_build_and_deploy_to_lambda-remote-script
+
+echo Copying 2a_build_and_deploy_to_lambda-remote-script to ${EC2_ID} at ${ADDRESS}
 scp -i ${IDENTITY_FILE} 2a_build_and_deploy_to_lambda-remote-script ec2-user@${ADDRESS}:node-oracledb-lambda-test/2a_build_and_deploy_to_lambda-remote-script
 # Restore the local file
 sed -i "s|LAMBDA_ROLE_ARN=.*|LAMBDA_ROLE_ARN=(updated by 2_build_and_deploy_to_lambda-remote-script)|" 2a_build_and_deploy_to_lambda-remote-script
 
+echo Connecting by ssh...
 ssh ec2-user@${ADDRESS} -i ${IDENTITY_FILE}
 # 'bash s' < 2a_build_and_deploy_to_lambda-remote-script
 
+echo Copying app.zip...
 scp -i ${IDENTITY_FILE} ec2-user@${ADDRESS}:node-oracledb-lambda-test/app.zip app.zip
 #aws lambda create-function \
 #    --region ap-southeast-2 \

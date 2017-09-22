@@ -10,10 +10,12 @@
 
     "Subnet": {
       "Type": "String",
+      "Default": "",
       "Description": "Required if installing into a VPC"
     },
     "InstanceSecurityGroup": {
       "Type": "String",
+      "Default": "",
       "Description": "Required if installing into a VPC"
     }
   },
@@ -96,14 +98,6 @@
             } ]
           }
         } ]
-      }
-    },
-
-    "Bucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": "node-oracledb-lambda-test",
-        "AccessControl": "Private"
       }
     }
   }
