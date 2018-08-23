@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# Lambda runs Node 6.10.3 - use the same to build our app and dependencies
+# Lambda runs Node 8.10 - use the same to build our app and dependencies
 NODE_VERSION=$(node --version)
-if [[ "${NODE_VERSION}" != "v6.10.3" ]]; then
+if [[ "${NODE_VERSION}" != "v8.10.0" ]]; then
   sudo yum -y install gcc44 gcc-c++ libgcc44 cmake git
-  wget http://nodejs.org/dist/v6.10.3/node-v6.10.3.tar.gz
-  tar -zxvf node-v6.10.3.tar.gz
-  cd node-v6.10.3 && ./configure && make
+  wget http://nodejs.org/dist/v8.10.0/node-v8.10.0.tar.gz
+  tar -zxvf node-v8.10.0.tar.gz
+  cd node-v8.10.0 && ./configure && make
   sudo make install
   cd ..
-  rm -rf node-v6.10.3*
+  rm -rf node-v8.10.0*
 fi
 
 git clone https://github.com/nalbion/node-oracledb-lambda-test.git
